@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Your Location - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .location-container {
+            max-width: 600px;
+            margin: 60px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(102, 126, 234, 0.12);
+        }
+
+        .location-container h2 {
+            text-align: center;
+            color: #2d3436;
+            margin-bottom: 30px;
+        }
+
+        .location-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .location-card {
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .location-card:hover {
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .location-card input[type="radio"] {
+            display: none;
+        }
+
+        .location-card input[type="radio"]:checked + label {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .location-card input[type="radio"]:checked ~ .location-name {
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .location-card:has(input:checked) {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+        }
+
+        .location-emoji {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .location-name {
+            font-weight: 500;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+
+        .location-cuisines {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .location-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .submit-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ Food Delivery</h1>
+        <div>
+            <span>Hello, {{ user_name }}!</span>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="location-container">
+            <h2>📍 Select Your Location</h2>
+            
+            <form method="POST" class="location-form">
+                <div class="location-grid" id="location-grid">
+                    {% if locations %}
+                        {% for location in locations %}
+                            <label class="location-card">
+                                <input type="radio" name="location" value="{{ location }}" required>
+                                <div class="location-emoji">🏪</div>
+                                <div class="location-name">{{ location }}</div>
+                                <div class="location-cuisines">Available</div>
+                            </label>
+                        {% endfor %}
+                    {% else %}
+                        <p style="text-align: center; color: #999; padding: 20px;">Loading locations...</p>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="submit-btn" id="submit-btn">Continue to Restaurants →</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Place Order - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ Food Delivery</h1>
+        <div>
+            <a href="{{ url_for('restaurants') }}">Back to Restaurants</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>Place Order</h2>
+        
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        
+        <div class="order-info">
+            <p>Select items from the restaurant menu to place an order.</p>
+            <p><a href="{{ url_for('restaurants') }}" class="btn">Back to Restaurants</a></p>
+        </div>
+    </div>
+</body>
+</html>

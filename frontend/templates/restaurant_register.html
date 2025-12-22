@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Registration - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ Food Delivery - Register Restaurant</h1>
+        <div>
+            <a href="{{ url_for('index') }}">Back Home</a>
+        </div>
+    </div>
+
+    <div class="auth-card">
+        <h2>Register Your Restaurant</h2>
+        
+        {% if error %}
+            <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            <input type="text" name="name" placeholder="Restaurant Name" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <input type="text" name="cuisine" placeholder="Cuisine Type (e.g., North Indian)" required>
+            <input type="text" name="address" placeholder="Address" required>
+            <input type="text" name="location" placeholder="City (e.g., Mumbai)" required>
+            <input type="tel" name="phone" placeholder="Phone Number" required>
+            <button type="submit" class="btn btn-primary">Register Restaurant</button>
+        </form>
+
+        <p style="text-align: center; margin-top: 20px;">
+            Already registered? <a href="{{ url_for('restaurant_login') }}" style="color: #667eea; font-weight: 600;">Login here</a>
+        </p>
+    </div>
+</body>
+</html>

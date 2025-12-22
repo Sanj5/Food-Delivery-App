@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Details - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ Food Delivery</h1>
+        <div>
+            <span>Hello, {{ user_name }}!</span>
+            <a href="{{ url_for('user_orders') }}">Back to Orders</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        {% if order %}
+            <div class="bill-container">
+                <div class="bill-header">
+                    <h2>🧾 Order Invoice</h2>
+                    <p class="bill-id">Order #{{ order.order_id[:8] }}</p>
+                </div>
+                
+                <div class="bill-section">
+                    <div class="bill-row">
+                        <span class="label">Restaurant:</span>
+                        <span class="value">{{ order.restaurant_name or 'Unknown' }}</span>
+                    </div>
+                    <div class="bill-row">
+                        <span class="label">Order Date:</span>
+                        <span class="value">{{ order.created_at[:10] }}</span>
+                    </div>
+                    <div class="bill-row">
+                        <span class="label">Status:</span>
+                        <span class="value"><span class="status-{{ order.status }}">{{ order.status | upper }}</span></span>
+                    </div>
+                </div>
+                
+                <div class="bill-divider"></div>
+                
+                <div class="bill-items">
+                    <h3>Order Items</h3>
+                    <table class="items-table">
+                        <thead>
+                            <tr>
+                                <th class="img-col">Photo</th>
+                                <th>Item</th>
+                                <th class="qty-col">Qty</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order['items'] %}
+                                <tr>
+                                    <td class="img-cell">
+                                        {% if item.image_url %}
+                                            <img src="{{ item.image_url }}" alt="{{ item.item_name }}" class="order-item-image">
+                                        {% else %}
+                                            <div class="no-image">No Image</div>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ item.item_name or 'Item' }}</td>
+                                    <td class="qty-col">x{{ item.quantity }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="bill-divider"></div>
+                
+                <div class="bill-total">
+                    <div class="total-row">
+                        <span class="total-label">Total Amount:</span>
+                        <span class="total-value">₹{{ "%.2f" | format(order.total) }}</span>
+                    </div>
+                </div>
+                
+                <div class="bill-footer">
+                    <p>Thank you for your order! 🙏</p>
+                    <p class="footer-text">Track your order status above</p>
+                </div>
+            </div>
+        {% else %}
+            <p>Order not found.</p>
+        {% endif %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url_for('user_orders') }}" class="btn">Back to Orders</a>
+        </div>
+    </div>
+</body>
+</html>

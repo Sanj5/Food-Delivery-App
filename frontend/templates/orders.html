@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ Food Delivery</h1>
+        <div>
+            <span>Hello, {{ user_name }}!</span>
+            <a href="{{ url_for('restaurants') }}">Order More</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>📋 My Orders</h2>
+        
+        {% if orders %}
+            <div class="orders-grid">
+                {% for order in orders %}
+                    <div class="order-card enhanced">
+                        <div class="card-header">
+                            <h3>{{ order.restaurant_name or 'Order' }}</h3>
+                            <span class="status-{{ order.status }} status-badge">{{ order.status | upper }}</span>
+                        </div>
+                        
+                        <div class="card-body">
+                            <div class="order-info-row">
+                                <span class="label">Total Amount:</span>
+                                <span class="amount">₹{{ "%.2f" | format(order.total) }}</span>
+                            </div>
+                            <div class="order-info-row">
+                                <span class="label">Order Date:</span>
+                                <span class="date">{{ order.created_at[:10] }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <a href="{{ url_for('order_details', order_id=order.order_id) }}" class="btn btn-small">View Full Bill</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>📦 No orders yet</p>
+                <p><a href="{{ url_for('restaurants') }}" class="btn">Start Ordering</a></p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

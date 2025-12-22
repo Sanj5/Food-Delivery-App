@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurants - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ Food Delivery</h1>
+        <div>
+            <span>Hello, {{ user_name }}! 📍 {{ user_location }}</span>
+            <a href="{{ url_for('select_location') }}">Change Location</a>
+            <a href="{{ url_for('user_orders') }}">My Orders</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
+    
+    <div class="container">
+        <h2>🍜 Best Restaurants in {{ user_location }}</h2>
+        
+        {% if restaurants %}
+            <div class="restaurants-grid">
+                {% for restaurant in restaurants %}
+                    <div class="restaurant-card">
+                        <h3>{{ restaurant.name }}</h3>
+                        <p><strong>Cuisine:</strong> {{ restaurant.cuisine }}</p>
+                        <p><strong>Location:</strong> {{ restaurant.get('location', 'N/A') }}</p>
+                        <p><strong>Rating:</strong> ⭐ {{ restaurant.rating }}</p>
+                        <p><strong>Address:</strong> {{ restaurant.address }}</p>
+                        <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.id) }}" class="btn">View Menu</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No restaurants available in your area.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

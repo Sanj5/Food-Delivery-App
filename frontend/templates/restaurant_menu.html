@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Menu - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ {{ restaurant_name }} - Menu Management</h1>
+        <div>
+            <a href="{{ url_for('restaurant_dashboard') }}">📦 Orders</a>
+            <a href="{{ url_for('restaurant_logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 30px;">
+            <!-- Add Item Form -->
+            <div>
+                <h2>➕ Add Menu Item</h2>
+                
+                {% if error %}
+                    <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                        {{ error }}
+                    </div>
+                {% endif %}
+
+                <form method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+                    <input type="hidden" name="action" value="add">
+                    <input type="text" name="item_name" placeholder="Item Name" required>
+                    <textarea name="description" placeholder="Description" rows="3"></textarea>
+                    <input type="number" name="price" placeholder="Price (₹)" step="0.01" min="0" required>
+                    <button type="submit" class="btn btn-primary">Add Item</button>
+                </form>
+            </div>
+
+            <!-- Current Menu -->
+            <div>
+                <h2>📋 Current Menu</h2>
+                
+                {% if menu %}
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        {% for item in menu %}
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 10px; border-left: 4px solid #667eea;">
+                                <h4 style="margin: 0 0 10px 0;">{{ item.item_name }}</h4>
+                                <p style="margin: 5px 0; color: #666; font-size: 14px;">{{ item.description }}</p>
+                                <p style="margin: 10px 0 0 0; color: #667eea; font-weight: 700; font-size: 16px;">₹{{ item.price }}</p>
+                                
+                                <form method="POST" style="margin-top: 10px;">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="item_id" value="{{ item.item_id }}">
+                                    <button type="submit" class="btn" style="background: #f44336; color: white; padding: 6px 12px; font-size: 12px; width: 100%;">Delete Item</button>
+                                </form>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state" style="padding: 30px; text-align: center; background: #f8f9fa; border-radius: 10px;">
+                        <p>📭 No menu items yet</p>
+                        <p style="font-size: 14px; color: #666;">Add your first item using the form</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

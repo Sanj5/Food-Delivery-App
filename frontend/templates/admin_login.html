@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Delivery - Admin Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-card">
+            <h1>👨‍💼 Admin Panel</h1>
+            <h2>Login</h2>
+            
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% endif %}
+            
+            <form method="POST">
+                <input type="email" name="email" placeholder="Admin Email" value="admin@fooddelivery.com" required>
+                <input type="password" name="password" placeholder="Password" value="admin123" required>
+                <button type="submit">Admin Login</button>
+            </form>
+            
+            <p style="margin-top: 20px; font-size: 13px; color: #666;">
+                Demo Credentials:<br>
+                Email: admin@fooddelivery.com<br>
+                Password: admin123
+            </p>
+            
+            <p><a href="{{ url_for('login') }}">Back to User Login</a></p>
+        </div>
+    </div>
+</body>
+</html>

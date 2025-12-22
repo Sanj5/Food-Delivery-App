@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Dashboard - Food Delivery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>🍽️ {{ restaurant_name }}</h1>
+        <div>
+            <span>Manager Portal</span>
+            <a href="{{ url_for('restaurant_menu_manage') }}">📋 Manage Menu</a>
+            <a href="{{ url_for('restaurant_dashboard') }}">📦 Orders</a>
+            <a href="{{ url_for('restaurant_logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📦 Incoming Orders</h2>
+        
+        {% if orders %}
+            <div class="orders-grid">
+                {% for order in orders %}
+                    <div class="order-card enhanced">
+                        <div class="order-header">
+                            <h3>Order #{{ order.order_id[:8] }}</h3>
+                            <span class="status-badge" style="background: {% if order.status == 'PLACED' %}#ff9800{% elif order.status == 'PREPARING' %}#2196F3{% elif order.status == 'OUT_FOR_DELIVERY' %}#9C27B0{% else %}#4CAF50{% endif %};">
+                                {{ order.status }}
+                            </span>
+                        </div>
+                        
+                        <div class="order-info">
+                            <p><strong>Customer:</strong> {{ order.user_name or 'Guest' }}</p>
+                            <p><strong>Items:</strong> {{ order.items|length }} items</p>
+                            <p><strong>Total:</strong> <span style="color: #00b894; font-weight: 700;">₹{{ order.total|round(2) }}</span></p>
+                            <p><strong>Ordered At:</strong> {{ order.created_at[:10] }}</p>
+                        </div>
+
+                        <div class="order-items">
+                            <strong>Items:</strong>
+                            <ul>
+                                {% for item in order.items %}
+                                    <li>{{ item.item_name }} x {{ item.quantity }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        {% if order.status == 'PLACED' %}
+                            <div style="margin-top: 15px; display: flex; gap: 10px;">
+                                <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="flex: 1;">
+                                    <input type="hidden" name="action" value="accept">
+                                    <input type="hidden" name="status" value="PREPARING">
+                                    <button type="submit" class="btn" style="background: #4CAF50; width: 100%; color: white;">✓ Accept Order</button>
+                                </form>
+                                <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="flex: 1;">
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="status" value="REJECTED">
+                                    <button type="submit" class="btn" style="background: #f44336; width: 100%; color: white;">✗ Reject Order</button>
+                                </form>
+                            </div>
+                        {% elif order.status == 'PREPARING' %}
+                            <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="margin-top: 15px;">
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="status" value="OUT_FOR_DELIVERY">
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">🚴 Mark as Out for Delivery</button>
+                            </form>
+                        {% elif order.status == 'OUT_FOR_DELIVERY' %}
+                            <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="margin-top: 15px;">
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="status" value="DELIVERED">
+                                <button type="submit" class="btn btn-primary" style="width: 100%; background: #4CAF50;">✓ Mark as Delivered</button>
+                            </form>
+                        {% else %}
+                            <p style="margin-top: 15px; text-align: center; color: #666;">Order {{ order.status }}</p>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <p>📭 No orders yet</p>
+                <p>New orders will appear here</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

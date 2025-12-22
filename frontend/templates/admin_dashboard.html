@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Delivery - Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .admin-navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            margin-bottom: 30px;
+        }
+
+        .admin-navbar h1 {
+            margin: 0;
+            color: white;
+        }
+
+        .admin-navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+        }
+
+        .admin-navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .orders-table thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .orders-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .orders-table td {
+            padding: 15px;
+            border-bottom: 1px solid #f1f3f5;
+        }
+
+        .orders-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .status-form select {
+            padding: 8px 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .status-form button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .status-form button:hover {
+            transform: translateY(-1px);
+        }
+
+        .order-items {
+            font-size: 13px;
+            color: #666;
+            margin: 10px 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .order-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .order-id {
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        .order-time {
+            font-size: 13px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-navbar">
+        <h1>👨‍💼 Admin Dashboard</h1>
+        <div>
+            <span>Welcome, {{ admin_name }}</span>
+            <a href="{{ url_for('admin_logout') }}">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📦 All Orders</h2>
+        
+        {% if orders %}
+            <table class="orders-table">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>User ID</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Current Status</th>
+                        <th>Update Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>
+                                <div class="order-info">
+                                    <span class="order-id">{{ order['order_id'][:8] }}...</span>
+                                    <span class="order-time">{{ order.get('created_at', 'N/A')[:10] }}</span>
+                                </div>
+                            </td>
+                            <td>{{ order.get('user_id', 'N/A')[:8] }}...</td>
+                            <td>
+                                <div class="order-items">
+                                    {% if order.get('items') %}
+                                        {% for item in order['items'] %}
+                                            <div>• {{ item.get('name', 'Item') }} (x{{ item.get('quantity', 1) }})</div>
+                                        {% endfor %}
+                                    {% else %}
+                                        No items
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>${{ "%.2f"|format(order.get('total', 0)) }}</td>
+                            <td>
+                                <span class="status-{{ order.get('status', 'pending') }}">
+                                    {{ order.get('status', 'pending')|upper }}
+                                </span>
+                            </td>
+                            <td>
+                                <form method="POST" action="{{ url_for('admin_update_order_status', order_id=order['order_id']) }}" class="status-form">
+                                    <select name="status" required>
+                                        <option value="pending" {% if order.get('status') == 'pending' %}selected{% endif %}>Pending</option>
+                                        <option value="confirmed" {% if order.get('status') == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                        <option value="cooking" {% if order.get('status') == 'cooking' %}selected{% endif %}>Cooking</option>
+                                        <option value="ready" {% if order.get('status') == 'ready' %}selected{% endif %}>Ready</option>
+                                        <option value="delivered" {% if order.get('status') == 'delivered' %}selected{% endif %}>Delivered</option>
+                                    </select>
+                                    <button type="submit">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-state">
+                <p>No orders found</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
