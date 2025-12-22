@@ -39,7 +39,7 @@
                         <div class="order-items">
                             <strong>Items:</strong>
                             <ul>
-                                {% for item in order.items %}
+                                {% for item in (order['items'] or []) %}
                                     <li>{{ item.item_name }} x {{ item.quantity }}</li>
                                 {% endfor %}
                             </ul>
