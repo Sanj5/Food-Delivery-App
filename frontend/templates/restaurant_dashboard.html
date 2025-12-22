@@ -31,7 +31,7 @@
                         
                         <div class="order-info">
                             <p><strong>Customer:</strong> {{ order.user_name or 'Guest' }}</p>
-                            <p><strong>Items:</strong> {{ order.items|length }} items</p>
+                            <p><strong>Items:</strong> {{ (order['items'] or [])|length }} items</p>
                             <p><strong>Total:</strong> <span style="color: #00b894; font-weight: 700;">₹{{ order.total|round(2) }}</span></p>
                             <p><strong>Ordered At:</strong> {{ order.created_at[:10] }}</p>
                         </div>
