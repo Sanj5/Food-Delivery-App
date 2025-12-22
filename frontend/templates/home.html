@@ -1,95 +1,221 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Food Delivery - Home</title>
+    <title>Food Delivery - Order Food Online</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            margin: 0;
+            padding: 0;
+            background: #ffffff;
+        }
+
+        .hero-section {
+            background: #ffffff;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+        }
+
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 80px;
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            color: #fc8019;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-nav-links {
+            display: flex;
+            gap: 30px;
             align-items: center;
         }
 
-        .landing-container {
-            text-align: center;
-            background: white;
-            padding: 60px 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.2);
-            max-width: 500px;
+        .top-nav-links a {
+            text-decoration: none;
+            color: #3d4152;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
         }
 
-        .landing-container h1 {
-            font-size: 2.5em;
-            color: #2d3436;
-            margin-bottom: 10px;
+        .top-nav-links a:hover {
+            color: #fc8019;
         }
 
-        .landing-container p {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 16px;
-        }
-
-        .login-buttons {
+        .hero-content {
+            flex: 1;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 80px;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
         }
 
-        .landing-btn {
-            padding: 16px 30px;
+        .hero-left {
+            max-width: 550px;
+        }
+
+        .hero-left h1 {
+            font-size: 52px;
+            line-height: 1.2;
+            color: #282c3f;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .hero-left p {
+            font-size: 18px;
+            color: #686b78;
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .cta-btn {
+            padding: 14px 32px;
             border: none;
-            border-radius: 25px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
             text-decoration: none;
             display: inline-block;
-            letter-spacing: 0.5px;
         }
 
-        .btn-user {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .cta-primary {
+            background: #fc8019;
             color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 4px 12px rgba(252,128,25,0.3);
         }
 
-        .btn-user:hover {
+        .cta-primary:hover {
+            background: #e67316;
             transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 6px 16px rgba(252,128,25,0.4);
         }
 
-        .btn-admin {
-            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-            color: white;
-            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
+        .cta-secondary {
+            background: #ffffff;
+            color: #3d4152;
+            border: 2px solid #d4d5d9;
         }
 
-        .btn-admin:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(0, 184, 148, 0.6);
+        .cta-secondary:hover {
+            border-color: #fc8019;
+            color: #fc8019;
         }
 
-        .emoji {
-            font-size: 3em;
-            margin-bottom: 20px;
+        .hero-right {
+            position: relative;
+        }
+
+        .hero-image {
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, #fff5eb 0%, #ffe8d6 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 180px;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 60px 80px;
+            background: #f8f9fa;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            color: #282c3f;
+            margin-bottom: 12px;
+            font-size: 20px;
+        }
+
+        .feature-card p {
+            color: #686b78;
+            font-size: 14px;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div class="landing-container">
-        <div class="emoji">🍽️</div>
-        <h1>Food Delivery</h1>
-        <p>Fast, Fresh, and Delicious Food Delivered to Your Door</p>
-        
-        <div class="login-buttons">
-            <a href="{{ url_for('login') }}" class="landing-btn btn-user">👤 Login as User</a>
-            <a href="{{ url_for('restaurant_login') }}" class="landing-btn btn-admin">🍳 Login as Restaurant Manager</a>
-            <a href="{{ url_for('admin_login') }}" class="landing-btn btn-admin">👨‍💼 Login as Admin</a>
+    <div class="hero-section">
+        <nav class="top-nav">
+            <div class="logo">🍽️ FoodExpress</div>
+            <div class="top-nav-links">
+                <a href="{{ url_for('login') }}">Sign In</a>
+                <a href="{{ url_for('register') }}">Sign Up</a>
+                <a href="{{ url_for('admin_login') }}">Admin</a>
+                <a href="{{ url_for('restaurant_login') }}">Partner with Us</a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <div class="hero-left">
+                <h1>Order food from your favourite restaurants</h1>
+                <p>Get food delivered from thousands of restaurants and local favourites straight to your door.</p>
+                <div class="cta-buttons">
+                    <a href="{{ url_for('login') }}" class="cta-btn cta-primary">Start Ordering</a>
+                    <a href="{{ url_for('register') }}" class="cta-btn cta-secondary">Create Account</a>
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="hero-image">🍕</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="features">
+        <div class="feature-card">
+            <div class="feature-icon">🚀</div>
+            <h3>Fast Delivery</h3>
+            <p>Get your food delivered to your doorstep in less than 30 minutes</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">🍽️</div>
+            <h3>Wide Selection</h3>
+            <p>Choose from thousands of restaurants and cuisines</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">💳</div>
+            <h3>Easy Payment</h3>
+            <p>Multiple payment options with secure checkout</p>
         </div>
     </div>
 </body>

@@ -3,36 +3,245 @@
 <head>
     <title>Restaurants - Food Delivery</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .swiggy-navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            padding: 16px 80px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .brand {
+            font-size: 24px;
+            font-weight: 800;
+            color: #fc8019;
+        }
+
+        .location-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #3d4152;
+            font-weight: 500;
+        }
+
+        .nav-right {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-right a {
+            text-decoration: none;
+            color: #3d4152;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .nav-right a:hover {
+            color: #fc8019;
+        }
+
+        .swiggy-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 32px;
+            color: #282c3f;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: #686b78;
+            margin-bottom: 40px;
+        }
+
+        .restaurant-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .swiggy-card {
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        .swiggy-card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #fff5eb 0%, #ffe8d6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 16px;
+        }
+
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #282c3f;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: #686b78;
+        }
+
+        .rating {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #48c479;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .cuisine-type {
+            color: #686b78;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .location-text {
+            color: #93959f;
+            font-size: 13px;
+        }
+
+        .view-menu-btn {
+            margin-top: 12px;
+            width: 100%;
+            padding: 10px;
+            background: #fc8019;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            transition: background 0.2s;
+        }
+
+        .view-menu-btn:hover {
+            background: #e67316;
+        }
+
+        .empty-state-swiggy {
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .empty-state-swiggy .emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .empty-state-swiggy h3 {
+            color: #282c3f;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state-swiggy p {
+            color: #686b78;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>🍽️ Food Delivery</h1>
-        <div>
-            <span>Hello, {{ user_name }}! 📍 {{ user_location }}</span>
+    <nav class="swiggy-navbar">
+        <div class="nav-left">
+            <div class="brand">🍽️ FoodExpress</div>
+            <div class="location-display">
+                <span>📍</span>
+                <span>{{ user_location }}</span>
+            </div>
+        </div>
+        <div class="nav-right">
             <a href="{{ url_for('select_location') }}">Change Location</a>
             <a href="{{ url_for('user_orders') }}">My Orders</a>
+            <span style="color: #686b78;">{{ user_name }}</span>
             <a href="{{ url_for('logout') }}">Logout</a>
         </div>
-    </div>
+    </nav>
     
-    <div class="container">
-        <h2>🍜 Best Restaurants in {{ user_location }}</h2>
+    <div class="swiggy-container">
+        <h1 class="page-title">Restaurants with online food delivery in {{ user_location }}</h1>
+        <p class="page-subtitle">Explore curated lists of top restaurants, cafes, pubs, and bars in {{ user_location }}, based on trends</p>
         
         {% if restaurants %}
-            <div class="restaurants-grid">
+            <div class="restaurant-grid">
                 {% for restaurant in restaurants %}
-                    <div class="restaurant-card">
-                        <h3>{{ restaurant.name }}</h3>
-                        <p><strong>Cuisine:</strong> {{ restaurant.cuisine }}</p>
-                        <p><strong>Location:</strong> {{ restaurant.get('location', 'N/A') }}</p>
-                        <p><strong>Rating:</strong> ⭐ {{ restaurant.rating }}</p>
-                        <p><strong>Address:</strong> {{ restaurant.address }}</p>
-                        <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.id) }}" class="btn">View Menu</a>
+                    <div class="swiggy-card">
+                        <div class="card-image">
+                            {% if restaurant.cuisine == 'North Indian' %}🍛
+                            {% elif restaurant.cuisine == 'South Indian' %}🥘
+                            {% elif restaurant.cuisine == 'Chinese' %}🍜
+                            {% elif restaurant.cuisine == 'Italian' %}🍝
+                            {% elif restaurant.cuisine == 'Fast Food' %}🍔
+                            {% elif restaurant.cuisine == 'Desserts' %}🍰
+                            {% elif restaurant.cuisine == 'Biryani' %}🍚
+                            {% else %}🍽️{% endif %}
+                        </div>
+                        <div class="card-body">
+                            <h3 class="restaurant-name">{{ restaurant.name }}</h3>
+                            <div class="restaurant-info">
+                                <span class="rating">⭐ {{ restaurant.rating }}</span>
+                                <span>•</span>
+                                <span>25-30 mins</span>
+                            </div>
+                            <div class="cuisine-type">{{ restaurant.cuisine }}</div>
+                            <div class="location-text">{{ restaurant.address }}</div>
+                            <a href="{{ url_for('restaurant_menu', restaurant_id=restaurant.id) }}" class="view-menu-btn">View Menu</a>
+                        </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <p>No restaurants available in your area.</p>
+            <div class="empty-state-swiggy">
+                <div class="emoji">🍽️</div>
+                <h3>No restaurants available</h3>
+                <p>We couldn't find any restaurants in your area. Try changing your location.</p>
+            </div>
         {% endif %}
     </div>
 </body>
