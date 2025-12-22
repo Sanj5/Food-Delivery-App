@@ -22,10 +22,11 @@
             <div class="orders-grid">
                 {% for order in orders %}
                     <div class="order-card enhanced">
+                        {% set status = (order.get('status') or 'PENDING')|upper %}
                         <div class="order-header">
                             <h3>Order #{{ order.order_id[:8] }}</h3>
-                            <span class="status-badge" style="background: {% if order.status == 'PLACED' %}#ff9800{% elif order.status == 'PREPARING' %}#2196F3{% elif order.status == 'OUT_FOR_DELIVERY' %}#9C27B0{% else %}#4CAF50{% endif %};">
-                                {{ order.status }}
+                            <span class="status-badge" style="background: {% if status == 'PLACED' or status == 'PENDING' %}#ff9800{% elif status == 'PREPARING' %}#2196F3{% elif status == 'OUT_FOR_DELIVERY' %}#9C27B0{% else %}#4CAF50{% endif %};">
+                                {{ status }}
                             </span>
                         </div>
                         
@@ -45,7 +46,7 @@
                             </ul>
                         </div>
 
-                        {% if order.status == 'PLACED' %}
+                        {% if status == 'PLACED' or status == 'PENDING' %}
                             <div style="margin-top: 15px; display: flex; gap: 10px;">
                                 <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="flex: 1;">
                                     <input type="hidden" name="action" value="accept">
@@ -58,13 +59,13 @@
                                     <button type="submit" class="btn" style="background: #f44336; width: 100%; color: white;">✗ Reject Order</button>
                                 </form>
                             </div>
-                        {% elif order.status == 'PREPARING' %}
+                        {% elif status == 'PREPARING' %}
                             <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="margin-top: 15px;">
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="status" value="OUT_FOR_DELIVERY">
                                 <button type="submit" class="btn btn-primary" style="width: 100%;">🚴 Mark as Out for Delivery</button>
                             </form>
-                        {% elif order.status == 'OUT_FOR_DELIVERY' %}
+                        {% elif status == 'OUT_FOR_DELIVERY' %}
                             <form method="POST" action="{{ url_for('restaurant_update_order_status', order_id=order.order_id) }}" style="margin-top: 15px;">
                                 <input type="hidden" name="action" value="update">
                                 <input type="hidden" name="status" value="DELIVERED">
