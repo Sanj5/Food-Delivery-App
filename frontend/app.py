@@ -35,11 +35,12 @@ def register():
             'email': request.form.get('email'),
             'password': request.form.get('password'),
             'name': request.form.get('name'),
-            'phone': request.form.get('phone')
+            'phone': request.form.get('phone'),
+            'location': ''  # Location will be selected after registration
         }
         
         try:
-            response = requests.post(f'{GATEWAY_URL}/auth/register', json=data, timeout=5)
+            response = requests.post(f'{GATEWAY_URL}/auth/register', json=data, timeout=15)
             
             if response.status_code == 201:
                 result = response.json()
