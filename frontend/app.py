@@ -388,12 +388,14 @@ def restaurant_menu_manage():
         
         try:
             if action == 'add':
+                # Generate proper image URL for deployment
+                image_url = url_for('static', filename='images/food.jpg', _external=True)
                 data = {
                     'restaurant_id': session['restaurant_id'],
                     'item_name': request.form.get('item_name'),
                     'price': float(request.form.get('price', 0)),
                     'description': request.form.get('description'),
-                    'image_url': 'http://localhost:5000/static/images/food.jpg'
+                    'image_url': image_url
                 }
                 response = requests.post(f'{GATEWAY_URL}/restaurant/menu/add', json=data, timeout=5)
                 
