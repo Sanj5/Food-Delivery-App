@@ -66,7 +66,7 @@ def login():
         }
         
         try:
-            response = requests.post(f'{GATEWAY_URL}/auth/login', json=data, timeout=5)
+            response = requests.post(f'{GATEWAY_URL}/auth/login', json=data, timeout=15)
             
             if response.status_code == 200:
                 result = response.json()
@@ -91,7 +91,7 @@ def select_location():
     # Fetch available locations from backend
     locations = []
     try:
-        response = requests.get(f'{GATEWAY_URL}/locations', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/locations', timeout=15)
         locations = response.json().get('locations', []) if response.status_code == 200 else []
     except:
         locations = []
@@ -113,7 +113,7 @@ def restaurants():
     try:
         user_location = session.get('location')
         params = {'location': user_location} if user_location else {}
-        response = requests.get(f'{GATEWAY_URL}/restaurants', params=params, timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/restaurants', params=params, timeout=15)
         restaurants_data = response.json().get('restaurants', []) if response.status_code == 200 else []
     except:
         restaurants_data = []
@@ -130,11 +130,17 @@ def restaurant_menu(restaurant_id):
         return redirect(url_for('login'))
     
     try:
-        response = requests.get(f'{GATEWAY_URL}/restaurants/{restaurant_id}/menu', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/restaurants/{restaurant_id}/menu', timeout=15)
         menu_data = response.json().get('menu', []) if response.status_code == 200 else []
         
-        rest_response = requests.get(f'{GATEWAY_URL}/restaurants/{restaurant_id}', timeout=5)
+        rest_response = requests.get(f'{GATEWAY_URL}/restaurants/{restaurant_id}', timeout=15)
         restaurant = rest_response.json() if rest_response.status_code == 200 else {}
+        
+        # Fix image URLs - replace localhost with proper deployment URL or relative path
+        for item in menu_data:
+            if item.get('image_url') and 'localhost' in item['image_url']:
+                # Replace localhost URL with deployment-friendly URL
+                item['image_url'] = url_for('static', filename='images/food.jpg', _external=True)
     except:
         menu_data = []
         restaurant = {}
@@ -204,7 +210,7 @@ def user_orders():
         return redirect(url_for('login'))
     
     try:
-        response = requests.get(f'{GATEWAY_URL}/orders?user_id={session["user_id"]}', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/orders?user_id={session["user_id"]}', timeout=15)
         orders = response.json().get('orders', []) if response.status_code == 200 else []
     except:
         orders = []
@@ -218,7 +224,7 @@ def order_details(order_id):
         return redirect(url_for('login'))
     
     try:
-        response = requests.get(f'{GATEWAY_URL}/orders/{order_id}', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/orders/{order_id}', timeout=15)
         order = response.json() if response.status_code == 200 else {}
     except:
         order = {}
@@ -243,7 +249,7 @@ def admin_login():
         }
         
         try:
-            response = requests.post(f'{GATEWAY_URL}/admin/login', json=data, timeout=5)
+            response = requests.post(f'{GATEWAY_URL}/admin/login', json=data, timeout=15)
             
             if response.status_code == 200:
                 result = response.json()
@@ -266,7 +272,7 @@ def admin_dashboard():
         return redirect(url_for('admin_login'))
     
     try:
-        response = requests.get(f'{GATEWAY_URL}/admin/orders', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/admin/orders', timeout=15)
         orders = response.json().get('orders', []) if response.status_code == 200 else []
     except:
         orders = []
@@ -286,7 +292,7 @@ def admin_update_order_status(order_id):
         data = {'status': new_status}
         
         response = requests.put(f'{GATEWAY_URL}/admin/orders/{order_id}/status', 
-                              json=data, timeout=5)
+                              json=data, timeout=15)
         
         if response.status_code == 200:
             return redirect(url_for('admin_dashboard'))
@@ -313,7 +319,7 @@ def restaurant_login():
         }
         
         try:
-            response = requests.post(f'{GATEWAY_URL}/restaurant/login', json=data, timeout=5)
+            response = requests.post(f'{GATEWAY_URL}/restaurant/login', json=data, timeout=15)
             
             if response.status_code == 200:
                 result = response.json()
@@ -345,7 +351,7 @@ def restaurant_register():
         }
         
         try:
-            response = requests.post(f'{GATEWAY_URL}/restaurant/register', json=data, timeout=5)
+            response = requests.post(f'{GATEWAY_URL}/restaurant/register', json=data, timeout=15)
             
             if response.status_code == 201:
                 result = response.json()
@@ -369,7 +375,7 @@ def restaurant_dashboard():
         return redirect(url_for('restaurant_login'))
     
     try:
-        response = requests.get(f'{GATEWAY_URL}/restaurant/{session["restaurant_id"]}/orders', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/restaurant/{session["restaurant_id"]}/orders', timeout=15)
         orders = response.json().get('orders', []) if response.status_code == 200 else []
     except:
         orders = []
@@ -398,7 +404,7 @@ def restaurant_menu_manage():
                     'description': request.form.get('description'),
                     'image_url': image_url
                 }
-                response = requests.post(f'{GATEWAY_URL}/restaurant/menu/add', json=data, timeout=5)
+                response = requests.post(f'{GATEWAY_URL}/restaurant/menu/add', json=data, timeout=15)
                 
                 if response.status_code == 201:
                     return redirect(url_for('restaurant_menu_manage'))
@@ -407,7 +413,7 @@ def restaurant_menu_manage():
                     
             elif action == 'delete':
                 item_id = request.form.get('item_id')
-                response = requests.delete(f'{GATEWAY_URL}/restaurant/menu/{item_id}', timeout=5)
+                response = requests.delete(f'{GATEWAY_URL}/restaurant/menu/{item_id}', timeout=15)
                 
                 if response.status_code == 200:
                     return redirect(url_for('restaurant_menu_manage'))
@@ -418,7 +424,7 @@ def restaurant_menu_manage():
     
     # Get current menu
     try:
-        response = requests.get(f'{GATEWAY_URL}/restaurant/{session["restaurant_id"]}/menu', timeout=5)
+        response = requests.get(f'{GATEWAY_URL}/restaurant/{session["restaurant_id"]}/menu', timeout=15)
         menu = response.json().get('menu', []) if response.status_code == 200 else []
     except:
         menu = []
@@ -441,7 +447,7 @@ def restaurant_update_order_status(order_id):
         data = {'status': new_status, 'action': action}
         
         response = requests.put(f'{GATEWAY_URL}/restaurant/orders/{order_id}/status', 
-                              json=data, timeout=5)
+                              json=data, timeout=15)
         
         if response.status_code == 200:
             return redirect(url_for('restaurant_dashboard'))
